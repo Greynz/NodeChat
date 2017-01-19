@@ -1,0 +1,21 @@
+.chatContainer {
+	position: fixed;
+	bottom:0;
+	z-index: 999;
+}
+.name {
+	float: left;
+	font-weight: bolder;
+	padding-right: 5px;
+}
+#messages { 
+	list-style-type: none; 
+	margin: 0; 
+	padding-bottom: 40px;
+}
+#messages li { 
+	padding: 6px 10px 1px 10px; 
+}
+#messages li:nth-child(odd) { 
+	background: #eee; 
+}
