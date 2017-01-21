@@ -3,36 +3,47 @@
   <head>
     <title>Socket.IO chat</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
     <link rel="stylesheet" type="text/css" href="styles/main.css">
 
   </head>
 
   <body>
-    <form action="action_page.php">
-    <div>
-    </form> 
+    <div class="container-fluid">
+      <div class="row content">
+        <div class="col-sm-10">
 
-    <ul id="messages">
-    </ul>
-    
-    <div class="row container chatContainer">
-      <div class="col-lg-6">
-        <div class="input-group">
-          <span class="input-group-btn">
-            <button id="sendButton" class="btn btn-default" type="button">Send</button>
-          </span>
-          <input type="text" id="messageBox" class="form-control" placeholder="Message...">
-        </div><!-- /input-group -->
-      </div><!-- /.col-lg-6 -->
+          <ul id="messages">
 
-      <div class="col-lg-6">
-        <input type="text" id="name" class="form-control" placeholder="Username...">
-      </div><!-- /input-group -->
-    </div><!-- /.row -->
+          </ul>
+          
+          <div class="row chatContainer">
+            <div class="col-lg-10">
+              <div class="input-group">
+                <span class="input-group-btn">
+                  <button id="sendButton" class="btn btn-default" type="button">Send</button>
+                </span>
+                <input type="text" id="messageBox" class="form-control" placeholder="Message...">
+              </div><!-- /input-group -->
+            </div><!-- /.col-lg-6 -->
 
+            <div class="col-lg-2">
+              <input type="text" id="name" class="form-control" placeholder="Username...">
+            </div><!-- /input-group -->
+          </div><!-- /.row -->
+        </div>
+
+        <div class="col-sm-2">
+          <ul id="users">
+            
+          </ul>
+        </div>
+
+      </div>
+    </div>
     <script src="/socket.io/socket.io.js"></script>
   	<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
   	<script src="/js/chat.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   </body>
 </html>
