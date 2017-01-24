@@ -22,6 +22,7 @@ socket.on('set id', function(id){
 });
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Name Change
+//TODO need to make the server decide if name can be switched, not do it locally
 
 nameField.keydown(function(e){
 	if(e.keyCode == 13 && myName != $('#name').val()) {
@@ -69,7 +70,12 @@ socket.on('disconnect message', function(dc, clients){
 function rebuildUserList(clients){
 	users.empty();
 	for (var i in clients){
-		var li = $('<li/>').append($('<button/>').text(clients[i].name).addClass('btn btn-default userButton').css("color", clients[i].color));
+		var button = $('<button/>').text(clients[i].name).addClass('btn btn-default userButton').css("color", clients[i].color);
+		button.click(function(){
+			msgBox.val('/w ' + $(this).text() + ' ');
+			msgBox.focus();
+		});
+		var li = $('<li/>').append(button);
 		users.append(li);
 	}
 }
@@ -134,6 +140,16 @@ socket.on('whisper message', function(msg){
 	uname.appendTo(message);
 	message.append(msg.msg);
 
+	$('#messages').append(item);
+	$("html, body").animate({ scrollTop: $(document).height() }, "slow");
+});
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ error message
+
+socket.on('error message', function(msg){
+	var item = $('<li/>').addClass('error');
+	var message = $('<p/>').addClass('error').appendTo(item);
+	message.append(msg.msg);
 	$('#messages').append(item);
 	$("html, body").animate({ scrollTop: $(document).height() }, "slow");
 });

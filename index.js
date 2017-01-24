@@ -28,12 +28,17 @@ io.on('connection', function(socket){
 
 	//name change
 	socket.on('name change', function(msg){
-		var i = searchId(msg.id)
-		if (i > -1) {
-			var oldname = clients[i].name;
-			clients[i].name = msg.name;
-			console.log(oldname + ' changed names to ' + msg.name);
-			io.emit('name change', clients, {old: oldname, new: msg.name});
+		if (searchName(msg.name) === -1){
+			var i = searchId(msg.id)
+			if (i > -1) {
+				var oldname = clients[i].name;
+				clients[i].name = msg.name;
+				console.log(oldname + ' changed names to ' + msg.name);
+				io.emit('name change', clients, {old: oldname, new: msg.name});
+			}
+		}
+		else {
+			io.sockets.connected[msg.id].emit('error message', {msg: 'The name '+msg.name+' is already taken'});
 		}
 	});
 
