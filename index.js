@@ -35,22 +35,24 @@ io.on('connection', function(socket){
 				clients[i].name = msg.name;
 				console.log(oldname + ' changed names to ' + msg.name);
 				io.emit('name change', clients, {old: oldname, new: msg.name});
+				io.sockets.connected[msg.id].emit('change name', msg.name );
 			}
 		}
 		else {
 			io.sockets.connected[msg.id].emit('error message', {msg: 'The name '+msg.name+' is already taken'});
+			var i = searchId(msg.id)
+			if (i > -1)
+				io.sockets.connected[msg.id].emit('change name', clients[i].name );
 		}
 	});
 
-	//emits to all clients but the sending client
+	//Chat message parses for commands, currently only supports whispers
 	socket.on('chat message', function(msg){
 
     	var cmd = msg.msg.match(/(\/. )([^\s]+)(.*)/);
-    	console.log(cmd);
     	if (cmd){
 	    	if (cmd[1] == '/w '){
     			var index = searchName(cmd[2]);
-    			console.log('whisper');
     			if (index > -1 && io.sockets.connected[clients[index].id]){
     				io.sockets.connected[msg.from].emit('whisper message', { name: 'To '+cmd[2], msg: cmd[3], received: false });
     				io.sockets.connected[clients[index].id].emit('whisper message', { name: msg.name, msg: cmd[3], received: true });
@@ -58,7 +60,7 @@ io.on('connection', function(socket){
     		}
     	}
     	else {
-    		console.log('normal');
+    		//emits to all clients but the sending client
 			for (var i=0; i<clients.length; i++)
 				if (clients[i].id != msg.id && io.sockets.connected[clients[i].id])
 	    			io.sockets.connected[clients[i].id].emit('chat message', msg);

@@ -8,7 +8,7 @@ var myName = $('#name').val();
 var myId;
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Set id called by server
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Set id called by server immediately
 
 socket.on('set id', function(id){
 	myId = id;
@@ -22,22 +22,32 @@ socket.on('set id', function(id){
 });
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Name Change
-//TODO need to make the server decide if name can be switched, not do it locally
 
+//Request name change from the server
 nameField.keydown(function(e){
-	if(e.keyCode == 13 && myName != $('#name').val()) {
-		myName = $('#name').val();
-		socket.emit('name change', {id: myId, name: myName});
+	var newName = $('#name').val();
+	if(e.keyCode == 13 && myName != newName && newName.length > 0) {
+		requestName(newName);
 	}
 });
-
 nameField.blur(function(){
-	if (myName != $('#name').val()){
-		myName = $('#name').val();
-		socket.emit('name change', {id: myId, name: myName});
+	var newName = $('#name').val();
+	if (myName != newName && newName.length > 0){
+		requestName(newName);
 	}
 })
+function requestName(newName){
+	socket.emit('name change', {id: myId, name: newName});
+}
 
+//called by the server to set your name
+socket.on('change name', function(msg){
+	myName = msg;
+	console.log(myName);
+	$('#name').val(msg);
+});
+
+//called by the server to notify clients of a name change
 socket.on('name change', function(clients, msg){
 	rebuildUserList(clients);
 	var item = $('<li/>').addClass('name-change');
@@ -79,7 +89,7 @@ function rebuildUserList(clients){
 		users.append(li);
 	}
 }
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Chat Messages
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Chat Messages / Commands
 
 sendButton.click(function(){
 	sendMessage();
@@ -128,7 +138,7 @@ function addChatMessage(msg, selfMessage){
 	$("html, body").animate({ scrollTop: $(document).height() }, "slow");
 }
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ whipser receive
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ whisper receive
 
 socket.on('whisper message', function(msg){
 	var item = $('<li/>');
