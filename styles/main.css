@@ -1,4 +1,5 @@
 .chatContainer {
+	overflow: auto;
 	position: fixed;
 	bottom:0;
 	z-index: 999;
@@ -8,8 +9,14 @@
 	font-weight: bolder;
 	padding-right: 5px;
 }
+.whispername {
+	color: #d575ff;
+}
 .text {
 	color: black;
+}
+.whispertext {
+	color: #d575ff;
 }
 .full {
 	height: 100%;
@@ -22,14 +29,14 @@
 }
 #messages { 
 	list-style-type: none; 
-	padding: 0, 0, 40px, 0;
-	margin: 0; 
+	padding: 0, 0, 100px, 0;
+	margin: 0, 0, 100px, 0; 
 }
 #messages li { 
 	padding: 6px 10px 1px 10px;
 }
 #messages li:nth-child(odd) { 
-	background: #eee;
+	background: #f6f6f6;
 }
 #messages li.connection {
 	background: #b8f2b5;
@@ -37,6 +44,19 @@
 #messages li.disconnect {
 	background: #fc9e97;
 }
+#messages li.selfText {
+	background: #eaf4ff;
+}
+#messages li.name-change {
+	background: #feffcc;
+}
+#messages li.whisper {
+	background: #190028;
+}
+#messages li.selfWhisper {
+	background: #3c004a;
+}
 #users {
 	height: 100%;
+	list-style-type: none;
 }

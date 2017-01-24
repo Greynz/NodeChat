@@ -18,17 +18,46 @@ io.on('connection', function(socket){
 	//client response - set their color and name, and then emit to all clients to update user list
 	socket.on('connection message', function(msg){
 		var index = searchId(socket.id)
-		console.log(index);
 		if (index > -1) {
 			clients[index].name = msg.name;
 			clients[index].color = msg.color;
     		io.emit('connection message', msg, clients);
     	}
+    	console.log(clients[index].name + ' has connected');
 	});
 
-	//simple emit to all clients
-	socket.on('chat message', function(name, msg){
-    	io.emit('chat message', name, msg);
+	//name change
+	socket.on('name change', function(msg){
+		var i = searchId(msg.id)
+		if (i > -1) {
+			var oldname = clients[i].name;
+			clients[i].name = msg.name;
+			console.log(oldname + ' changed names to ' + msg.name);
+			io.emit('name change', clients, {old: oldname, new: msg.name});
+		}
+	});
+
+	//emits to all clients but the sending client
+	socket.on('chat message', function(msg){
+
+    	var cmd = msg.msg.match(/(\/. )([^\s]+)(.*)/);
+    	console.log(cmd);
+    	if (cmd){
+	    	if (cmd[1] == '/w '){
+    			var index = searchName(cmd[2]);
+    			console.log('whisper');
+    			if (index > -1 && io.sockets.connected[clients[index].id]){
+    				io.sockets.connected[msg.from].emit('whisper message', { name: 'To '+cmd[2], msg: cmd[3], received: false });
+    				io.sockets.connected[clients[index].id].emit('whisper message', { name: msg.name, msg: cmd[3], received: true });
+    			}
+    		}
+    	}
+    	else {
+    		console.log('normal');
+			for (var i=0; i<clients.length; i++)
+				if (clients[i].id != msg.id && io.sockets.connected[clients[i].id])
+	    			io.sockets.connected[clients[i].id].emit('chat message', msg);
+    	}
 	});
 
 	//on disconnect remove them from our array of clients and have all clients rebuild their user list
@@ -50,6 +79,14 @@ http.listen(3000, function(){
 function searchId(sid){
 	for (var i=0; i<clients.length; i++){
 		if (clients[i].id === sid)
+			return i;
+	}
+	return -1;
+}
+
+function searchName(name){
+	for (var i=0; i<clients.length; i++){
+		if (clients[i].name === name)
 			return i;
 	}
 	return -1;
