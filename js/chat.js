@@ -14,7 +14,7 @@ socket.on('set id', function(id){
 	myId = id;
 	console.log(myId);
 	socket.emit('connection message', 	
-			{ 	color:myColor, 
+			{ color:myColor, 
 				name:nameField.val(), 
 				msg:' has connected to the server!', 
 				id: myId 
